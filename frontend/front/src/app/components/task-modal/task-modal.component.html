@@ -1,0 +1,111 @@
+<!-- ================================================================== -->
+<!-- ARQUIVO: task-modal.component.html (VERSÃO FINAL COM A CORREÇÃO *ngIf) -->
+<!-- ================================================================== -->
+
+<div *ngIf="isVisible" class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditing ? 'Editar Pedido' : 'Novo Pedido' }}</h2>
+      <button mat-icon-button (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+   
+    <div *ngIf="formData">
+
+      <form #pedidoForm="ngForm" class="task-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nome dos Clientes</mat-label>
+          <input matInput [(ngModel)]="formData.clientName" name="clientName" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tipo de Solicitação</mat-label>
+          <mat-select [(ngModel)]="formData.visaApplicationType" name="visaApplicationType" required>
+            <mat-option value="Primeiro Visto">Primeiro Visto</mat-option>
+            <mat-option value="Renovação">Renovação</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>ID do Cliente</mat-label>
+          <input matInput [(ngModel)]="formData.clientId" name="clientId" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nº do File</mat-label>
+          <input matInput [(ngModel)]="formData.file" name="file">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Agência</mat-label>
+          <input matInput [(ngModel)]="formData.agency" name="agency">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contato da Agência</mat-label>
+          <input matInput [(ngModel)]="formData.agencyContact" name="agencyContact">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Data de Contratação</mat-label>
+          <input matInput type="date" [(ngModel)]="formData.hiringDate" name="hiringDate" required appMaxYear>
+          <mat-error *ngIf="pedidoForm.controls['hiringDate']?.errors?.['maxYear']">
+            O ano não pode ter mais de 4 dígitos.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Cidade do Agendamento</mat-label>
+          <mat-select [(ngModel)]="formData.state" name="state">
+            <mat-option *ngFor="let s of states" [value]="s">{{ s }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Data e Hora no CASV</mat-label>
+          <input matInput type="datetime-local" [(ngModel)]="formData.casvDateTime" name="casvDateTime" appMaxYear>
+          <mat-error *ngIf="pedidoForm.controls['casvDateTime']?.errors?.['maxYear']">
+            O ano não pode ter mais de 4 dígitos.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Data e Hora no Consulado</mat-label>
+          <input matInput type="datetime-local" [(ngModel)]="formData.consulateDateTime" name="consulateDateTime" appMaxYear>
+          <mat-error *ngIf="pedidoForm.controls['consulateDateTime']?.errors?.['maxYear']">
+            O ano não pode ter mais de 4 dígitos.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>País do Visto</mat-label>
+          <input matInput [(ngModel)]="formData.visaCountry" name="visaCountry" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Status do Pedido</mat-label>
+          <mat-select [(ngModel)]="formData.processStatus" name="processStatus" (selectionChange)="onStatusChange($event)" required>
+            <mat-option *ngFor="let st of processStatusOptions" [value]="st">{{ st }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="isEditing" appearance="outline" class="full-width">
+          <mat-label>Motivo da Alteração (Opcional)</mat-label>
+          <textarea matInput [(ngModel)]="formData.editReason" name="editReason" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="modal-actions">
+          <button mat-button type="button" (click)="onClose()">Cancelar</button>
+          <button mat-raised-button color="primary" type="button" (click)="onSubmit()" [disabled]="!pedidoForm.valid || isSubmitting">
+            {{ isEditing ? 'Salvar Alterações' : 'Adicionar Pedido' }}
+          </button>
+        </div>
+      </form>
+
+    </div>
+    
+
+  </div>
+</div>

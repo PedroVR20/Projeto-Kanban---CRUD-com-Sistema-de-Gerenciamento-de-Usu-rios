@@ -1,0 +1,36 @@
+
+services:
+ 
+  db_vistos:
+    
+    image: postgres:15-alpine
+
+    
+    container_name: postgres_db_vistos
+
+   
+    restart: always
+
+   
+    ports:
+      - "5433:5432"
+
+    
+    environment:
+      POSTGRES_USER: user_vistos       
+      POSTGRES_PASSWORD: pass_vistos   
+      POSTGRES_DB: db_apivistos        
+
+    
+    volumes:
+      - postgres-data-vistos:/var/lib/postgresql/data
+
+
+networks:
+  default:
+    driver: bridge
+
+
+volumes:
+  postgres-data-vistos:
+    driver: local

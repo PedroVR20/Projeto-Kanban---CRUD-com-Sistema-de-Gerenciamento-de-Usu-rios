@@ -1,0 +1,29 @@
+<div class="column">
+  <div class="column-header">
+    <h3>{{ column.name }}</h3>
+    <span class="task-count">{{ column.tasks.length }}</span>
+  </div>
+
+  <div class="task-list"
+     cdkDropList
+     [id]="column.id"
+     [cdkDropListData]="column.tasks"
+     [cdkDropListConnectedTo]="connectedTo"  
+     (cdkDropListDropped)="onTaskDrop($event)">
+    
+   
+    <app-task-card *ngFor="let task of column.tasks; let i = index"
+      cdkDrag
+      [task]="task"
+      [taskIndex]="i"
+      [columnId]="column.id"
+      [isHovered]="hoveredTask?.columnId === column.id && hoveredTask?.index === i"
+      (hover)="taskHover.emit($event)"
+      (leave)="taskLeave.emit()"
+      (edit)="taskEdit.emit(task)"
+      (cancel)="taskCancel.emit(task)">
+    </app-task-card> 
+   
+
+  </div>
+</div>

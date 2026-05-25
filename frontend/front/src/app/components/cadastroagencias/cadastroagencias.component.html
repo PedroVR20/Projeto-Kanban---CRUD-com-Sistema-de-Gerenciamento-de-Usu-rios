@@ -1,0 +1,120 @@
+<div class="agency-container">
+  <div class="header">
+    <h1>Cadastro de Agência</h1>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner-overlay">
+    <mat-spinner></mat-spinner>
+    <p>Carregando agências...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="agency-content-grid">
+    <mat-card class="agency-form-card info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>edit_document</mat-icon>
+          Formulário de Cadastro
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="agencyForm" (ngSubmit)="onSubmit()" class="agency-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome da Agência</mat-label>
+            <input matInput formControlName="nome" placeholder="Ex: Agência de Viagens XYZ">
+            <mat-error *ngIf="agencyForm.get('nome')?.hasError('required') && agencyForm.get('nome')?.touched">
+              Nome é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>CNPJ</mat-label>
+            <input matInput formControlName="cnpj" placeholder="Ex: 00.000.000/0000-00">
+            <mat-error *ngIf="agencyForm.get('cnpj')?.hasError('required') && agencyForm.get('cnpj')?.touched">
+              CNPJ é obrigatório.
+            </mat-error>
+            <mat-error *ngIf="agencyForm.get('cnpj')?.hasError('pattern') && agencyForm.get('cnpj')?.touched">
+              CNPJ inválido. Formato: 00.000.000/0000-00
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="Ex: contato@agencia.com">
+            <mat-error *ngIf="agencyForm.get('email')?.hasError('required') && agencyForm.get('email')?.touched">
+              Email é obrigatório.
+            </mat-error>
+            <mat-error *ngIf="agencyForm.get('email')?.hasError('email') && agencyForm.get('email')?.touched">
+              Email inválido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Telefone</mat-label>
+            <input matInput formControlName="telefone" placeholder="Ex: (XX) XXXX-XXXX">
+            <mat-error *ngIf="agencyForm.get('telefone')?.hasError('required') && agencyForm.get('telefone')?.touched">
+              Telefone é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Endereço</mat-label>
+            <textarea matInput formControlName="endereco" placeholder="Ex: Rua Exemplo, 123 - Cidade/UF"></textarea>
+            <mat-error *ngIf="agencyForm.get('endereco')?.hasError('required') && agencyForm.get('endereco')?.touched">
+              Endereço é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="agencyForm.invalid">
+              <mat-icon>save</mat-icon>
+              Cadastrar Agência
+            </button>
+            <button mat-button type="button" (click)="agencyForm.reset()">
+              <mat-icon>clear</mat-icon>
+              Limpar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="agency-list-card info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>list</mat-icon>
+          Agências Cadastradas
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="agencyForm">
+          <mat-form-field appearance="outline" class="full-width search-field">
+            <mat-label>Pesquisar Agência</mat-label>
+            <input matInput formControlName="searchControl" placeholder="Pesquisar por nome, CNPJ ou email">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </form>
+       
+
+        <mat-list *ngIf="filteredAgencies.length > 0; else noAgencies">
+          <div *ngFor="let agency of filteredAgencies">
+            <mat-list-item>
+              <mat-icon matListItemIcon>business</mat-icon>
+              <div matListItemTitle>{{ agency.nome }}</div>
+              <div matListItemLine>CNPJ: {{ agency.cnpj }}</div>
+              <div matListItemLine>Email: {{ agency.email }}</div>
+              <div matListItemLine>Telefone: {{ agency.telefone }}</div>
+              <div matListItemLine>Endereço: {{ agency.endereco }}</div>
+              <button mat-icon-button (click)="deleteAgency(agency.id, agency.nome)" matListItemMeta>
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          </div>
+        </mat-list>
+        <ng-template #noAgencies>
+          <p class="no-agencies-message">Nenhuma agência encontrada.</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

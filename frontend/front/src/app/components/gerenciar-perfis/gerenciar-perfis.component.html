@@ -1,0 +1,73 @@
+<div class="gerenciar-perfis-container">
+  <header class="header">
+    <h1>Gerenciar Perfis de Usuários</h1>
+    <p class="subtitle">Gerencie os perfis dos usuários aprovados no sistema</p>
+    <button routerLink="/admin" class="btn-voltar">
+      <mat-icon>arrow_back</mat-icon>
+      Voltar para Aprovações
+    </button>
+  </header>
+
+  
+  <div *ngIf="mensagem" class="mensagem-container" [ngClass]="tipoMensagem">
+    {{ mensagem }}
+  </div>
+
+  
+  <div *ngIf="isLoading" class="loading">
+    Carregando usuários...
+  </div>
+
+  
+  <div *ngIf="!isLoading" class="tabela-container">
+    <div *ngIf="usuariosAprovados.length === 0" class="sem-dados">
+      Nenhum usuário aprovado encontrado.
+    </div>
+
+    <table *ngIf="usuariosAprovados.length > 0" class="tabela-usuarios">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Perfil Atual</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuariosAprovados">
+          <td>{{ usuario.nome }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>
+            <span class="perfil-badge" [ngClass]="usuario.perfil.toLowerCase()">
+              {{ usuario.perfil }}
+            </span>
+          </td>
+          <td class="acoes">
+            <button
+              *ngIf="usuario.perfil === 'USER'"
+              class="btn-promover"
+              (click)="promoverParaMaster(usuario)"
+              title="Promover para MASTER">
+              <span class="icon"><mat-icon>arrow_upward</mat-icon></span>
+              Promover
+            </button>
+
+            <button
+              *ngIf="usuario.perfil === 'MASTER'"
+              class="btn-rebaixar"
+              (click)="rebaixarParaUser(usuario)"
+              [disabled]="isProprioUsuario(usuario)"
+              [title]="isProprioUsuario(usuario) ? 'Você não pode rebaixar seu próprio perfil' : 'Rebaixar para USER'">
+              <span class="icon"><mat-icon>arrow_downward</mat-icon></span>
+              Rebaixar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>Nota:</strong> Você não pode rebaixar seu próprio perfil de MASTER para USER.
+  </div>
+</div>

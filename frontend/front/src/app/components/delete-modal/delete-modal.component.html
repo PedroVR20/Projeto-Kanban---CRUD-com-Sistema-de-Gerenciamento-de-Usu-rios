@@ -1,0 +1,24 @@
+<div *ngIf="isVisible" class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <mat-icon class="warning-icon">warning</mat-icon>
+      <h2>Confirmar Exclusão</h2>
+    </div>
+    
+    <div class="modal-body">
+      <p>Tem certeza de que deseja excluir a tarefa:</p>
+      <p class="task-title">"{{ taskTitle }}"</p>
+      <p class="warning-text">Esta ação não pode ser desfeita.</p>
+    </div>
+    
+    <div class="modal-actions">
+      <button mat-button (click)="onClose()">
+        Cancelar
+      </button>
+      <button mat-raised-button color="warn" (click)="onConfirm()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>
+

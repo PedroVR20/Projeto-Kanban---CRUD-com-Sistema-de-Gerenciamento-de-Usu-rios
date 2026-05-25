@@ -1,0 +1,43 @@
+<div class="board-container">
+  
+  <app-task-modal 
+    [isVisible]="showTaskModal" 
+    [availableColumns]="availableColumns"
+    [isSubmitting]="isSubmitting"
+    [task]="taskToEdit"
+    (close)="closeTaskModal()"
+    (taskSubmit)="onTaskSubmit($event)">
+  </app-task-modal>
+
+  
+  <app-filter-modal
+    [isVisible]="showFilterModal"
+    (close)="closeFilterModal()"
+    (apply)="onFilterApply($event)">
+  </app-filter-modal>
+
+  
+    <app-reason-modal
+    [isVisible]="showConfirmCancelModal"
+    [taskTitle]="getTaskTitleForCancel()"
+    title="Cancelar Pedido"
+    confirmButtonText="Sim, Cancelar Pedido"
+    (close)="closeConfirmCancelModal()"
+    (confirm)="confirmCancelTask($event)">
+  </app-reason-modal>
+
+
+  <div class="columns-wrapper">
+    
+    <app-column *ngFor="let column of columns"
+  [column]="column"
+  [hoveredTask]="hoveredTask"
+  [connectedTo]="getColumnIds()" 
+  (taskDrop)="drop($event)"
+  (taskHover)="onTaskHover($event)"
+  (taskLeave)="onTaskLeave()"
+  (taskEdit)="openTaskModal($event)"
+  (taskCancel)="onTaskCancel($event)">
+</app-column>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+# Credenciais — NUNCA commitar
+.env
+
+# Maven
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Angular
+**/node_modules/
+**/.angular/cache/
+**/dist/
+
+# IDEs
+**/.idea/
+**/.vscode/
+**/*.iml
+
+# Logs
+**/*.log

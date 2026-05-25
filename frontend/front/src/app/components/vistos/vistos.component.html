@@ -1,0 +1,79 @@
+<div class="vistos-container">
+  <div class="header">  
+    <h1>Gerenciamento de Vistos</h1>
+    <p class="subtitle">{{ isAdmin ? 'Visão de Admin: você pode visualizar todos os vistos.' : 'Visão de Operador: você pode visualizar apenas os seus vistos.' }}</p>
+  </div>
+
+
+  <div class="form-container">
+    <h2>Criar Novo Visto</h2>
+   
+    <form (ngSubmit)="criarVisto()" #formVisto="ngForm" class="form-novo-visto">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Nome do Cliente ou Identificação do Visto</mat-label>
+       
+        <input matInput [(ngModel)]="nomeNovoVisto" name="nomeNovoVisto" required>
+      </mat-form-field>
+      
+      <!-- O botão fica desabilitado se o formulário estiver inválido (campo vazio) -->
+      <button mat-raised-button color="primary" type="submit" [disabled]="formVisto.invalid">
+        <mat-icon>add</mat-icon>
+        Salvar Visto
+      </button>
+    </form>
+  </div>
+  
+ 
+  <mat-divider class="section-divider"></mat-divider>
+
+ 
+  <div class="lista-container">
+    <h2>Vistos Criados</h2>
+
+    <!-- Spinner de Carregamento -->
+    <div *ngIf="carregando" class="spinner-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Carregando vistos...</p>
+    </div>
+
+    <!-- Mensagem de Erro -->
+    <div *ngIf="erro" class="error-container">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <p>{{ erro }}</p>
+    </div>
+
+    <!-- Mensagem de Nenhum Visto Encontrado -->
+    <div *ngIf="!carregando && !erro && vistos.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">inbox</mat-icon>
+      <p>Nenhum visto encontrado.</p>
+      <p>Crie seu primeiro visto no formulário acima!</p>
+    </div>
+
+    <!-- Grid com os Cards dos Vistos -->
+    <div *ngIf="!carregando && vistos.length > 0" class="visto-grid">
+      <mat-card *ngFor="let visto of vistos" class="visto-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>description</mat-icon>
+            {{ visto.nome }}
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p><strong>ID do Visto:</strong> {{ visto.id }}</p>
+          <p><strong>Criado por:</strong> {{ visto.nomeOperador }}</p>
+        </mat-card-content>
+
+
+
+        <mat-card-actions *ngIf="isAdmin" align="end">
+          <button mat-icon-button color="warn" 
+                  (click)="excluirVisto(visto.id, visto.nome)" 
+                  aria-label="Excluir este visto">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </mat-card-actions>
+
+      </mat-card>
+    </div>
+  </div>
+</div>

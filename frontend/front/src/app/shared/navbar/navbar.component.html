@@ -1,0 +1,51 @@
+<mat-toolbar color="primary" class="kanban-toolbar">
+
+  <span>Quadro de Pedidos</span>
+
+  <span class="toolbar-spacer"></span>
+
+  <div class="action-buttons">
+
+    <button mat-raised-button color="accent" routerLink="/" class="home-button" *ngIf="!isBoardRoute()">
+        <mat-icon>home</mat-icon>
+        Quadro
+    </button>
+    <button mat-raised-button color="accent" (click)="openFilterModal()">
+      <mat-icon>filter_list</mat-icon>
+      Filtro
+    </button>
+    <button mat-raised-button color="accent" routerLink="/cadastro-agencia">
+      <mat-icon>edit_document</mat-icon>
+      Agência
+    </button>
+    <button mat-raised-button color="accent" routerLink="/vistos">
+      <mat-icon>flight</mat-icon>
+      Vistos
+    </button>
+    <button mat-raised-button color="accent" (click)="openTaskModal()">
+      <mat-icon>add</mat-icon>
+      Novo Pedido
+    </button>
+    
+  
+<button *ngIf="isMaster" mat-button routerLink="/admin" color="accent">
+  <mat-icon>admin_panel_settings</mat-icon>
+  Painel Admin
+</button>
+
+
+
+    <div class="main-separator"></div>
+
+    
+    <button *ngIf="isLoggedIn" 
+            mat-icon-button 
+            class="logout-button" 
+            (click)="fazerLogout()" 
+            matTooltip="Sair">
+      <mat-icon>logout</mat-icon>
+    </button>
+    
+  </div>
+  
+</mat-toolbar>

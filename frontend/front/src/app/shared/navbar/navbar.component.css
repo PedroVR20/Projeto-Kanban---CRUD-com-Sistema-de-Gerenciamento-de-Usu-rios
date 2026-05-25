@@ -1,0 +1,62 @@
+:host {
+  /* Garante que o componente da navbar se comporte como um bloco */
+  display: block;
+}
+
+.kanban-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main-separator {
+  width: 1px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 8px;
+}
+
+/* --- ESTILOS DO PERFIL DO USUÁRIO --- */
+
+.user-profile-button {
+  /* Usando !important como último recurso para garantir a aplicação */
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 4px 8px !important;
+  border-radius: 20px !important;
+}
+
+.user-profile-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.avatar {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background-color: white !important;
+  color: #3f51b5 !important; /* Cor primária do Material */
+  font-weight: bold !important;
+  font-size: 14px !important;
+}
+
+.user-profile-text {
+  color: white !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+}

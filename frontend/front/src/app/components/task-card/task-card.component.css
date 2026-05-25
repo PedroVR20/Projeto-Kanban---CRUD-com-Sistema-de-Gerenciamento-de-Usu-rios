@@ -1,0 +1,95 @@
+.task-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #2196F3;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.task-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+
+.mat-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px !important; /* Ajuste o padding do rodapé */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px; /* Espaço entre os botões */
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.task-card.archived {
+  cursor: default; /* Muda o cursor para o padrão, não a "mãozinha" */
+  pointer-events: none; /* Desabilita todos os eventos de clique e mouse */
+  opacity: 0.7; /* Opcional: Deixa o card com uma aparência de "desabilitado" */
+}
+
+.task-card.archived .delete-button {
+  display: none; /* Esconde o botão de deletar em cards arquivados */
+}
+
+
+.task-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.delete-btn {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin-left: 8px;
+}
+
+.delete-btn mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.task-description {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #888;
+}
+
+.task-date {
+  font-weight: 500;
+}
+
+.task-responsible {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+

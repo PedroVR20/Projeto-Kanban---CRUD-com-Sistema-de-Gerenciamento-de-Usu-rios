@@ -1,0 +1,59 @@
+<div class="admin-container">
+  <header class="admin-header">
+    <h1>Painel de Administração</h1>
+  </header>
+
+  <h2>Aprovação de Usuários Pendentes</h2>
+
+  <!-- Botão para Gerenciar Perfis -->
+  <div class="action-bar">
+    <button routerLink="/gerenciar-perfis" class="btn-gerenciar-perfis">
+      <mat-icon>manage_accounts</mat-icon>
+      Gerenciar Perfis de Usuários
+    </button>
+  </div>
+
+  <!-- Mensagem de Carregando -->
+  <div *ngIf="isLoading" class="loading-message">
+    <p>Carregando usuários pendentes...</p>
+  </div>
+
+  <!-- Mensagem para quando não há usuários pendentes -->
+  <div *ngIf="!isLoading && usuariosPendentes.length === 0" class="no-users-message">
+    <p>🎉 Nenhum usuário pendente de aprovação no momento.</p>
+  </div>
+
+  <!-- Tabela que só aparece se houver usuários pendentes -->
+  <table *ngIf="!isLoading && usuariosPendentes.length > 0" class="user-table">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Ações</th> <!-- Mudei de "Ação" para "Ações" no plural -->
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loop para criar uma linha para cada usuário -->
+      <tr *ngFor="let usuario of usuariosPendentes">
+        <td>{{ usuario.nome }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>
+          <!-- Div para agrupar os botões de ação -->
+          <div class="action-buttons">
+            <!-- Botão Aprovar -->
+            <button (click)="aprovarUsuario(usuario.id)" class="approve-button">
+              <mat-icon>check_circle</mat-icon> <!-- Ícone opcional do Material -->
+              Aprovar
+            </button>
+            
+            <!-- BOTÃO REJEITAR (A NOVIDADE) -->
+            <button (click)="rejeitarUsuario(usuario.id)" class="reject-button">
+              <mat-icon>cancel</mat-icon> <!-- Ícone opcional do Material -->
+              Rejeitar
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,7 @@
+[mat-dialog-title] {
+  color: #d32f2f; /* Vermelho para dar um tom de alerta */
+}
+
+[mat-dialog-actions] {
+  padding: 8px 24px;
+}

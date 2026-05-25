@@ -1,0 +1,170 @@
+networks:
+  kanban-app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pgdata_pedidos:
+  pgdata_logs:
+
+services:
+  database-postgres:
+    image: postgres:16-alpine
+    container_name: kanban-postgres-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_MAIN_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_MAIN_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - kanban-app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_MAIN_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres_pedidos:
+    image: postgres:15
+    container_name: postgres_pedidos
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_PEDIDOS_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PEDIDOS_PASSWORD}
+      - POSTGRES_DB=pedidos_db
+    volumes:
+      - pgdata_pedidos:/var/lib/postgresql/data
+    networks:
+      - kanban-app-network
+
+  postgres_logs:
+    image: postgres:15
+    container_name: postgres_logs
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_PEDIDOS_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PEDIDOS_PASSWORD}
+      - POSTGRES_DB=logs_db
+    volumes:
+      - pgdata_logs:/var/lib/postgresql/data
+    networks:
+      - kanban-app-network
+
+  message-broker-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: kanban-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    networks:
+      - kanban-app-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-agencias:
+    build: ./backend/api-agencias
+    container_name: api-agencias
+    restart: always
+    ports:
+      - "8084:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database-postgres:5432/agencias_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_MAIN_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_MAIN_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      database-postgres:
+        condition: service_healthy
+    networks:
+      - kanban-app-network
+
+  api-usuarios:
+    build: ./backend/projetoUsuariosApi
+    container_name: api-usuarios
+    restart: always
+    ports:
+      - "8083:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database-postgres:5432/usuarios_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_MAIN_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_MAIN_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=message-broker-rabbitmq
+      - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USER}
+      - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASS}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      database-postgres:
+        condition: service_healthy
+      message-broker-rabbitmq:
+        condition: service_healthy
+    networks:
+      - kanban-app-network
+
+  api-vistos:
+    build: ./backend/ApideVistos
+    container_name: api-vistos
+    restart: always
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database-postgres:5432/vistos_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_MAIN_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_MAIN_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      database-postgres:
+        condition: service_healthy
+    networks:
+      - kanban-app-network
+
+  api-pedidos:
+    build: ./backend/apidepedidos
+    container_name: api-pedidos
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_pedidos:5432/pedidos_db
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_PEDIDOS_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PEDIDOS_PASSWORD}
+      - LOGS_DATASOURCE_URL=jdbc:postgresql://postgres_logs:5432/logs_db
+      - LOGS_DATASOURCE_USERNAME=${POSTGRES_PEDIDOS_USER}
+      - LOGS_DATASOURCE_PASSWORD=${POSTGRES_PEDIDOS_PASSWORD}
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_SECRET_KEY=${JWT_SECRET_KEY_BASE64}
+    depends_on:
+      - postgres_pedidos
+      - postgres_logs
+    networks:
+      - kanban-app-network
+
+  frontend-kanban:
+    build:
+      context: ./frontend/front
+      dockerfile: Dockerfile
+    container_name: frontend-kanban
+    ports:
+      - "4200:80"
+    depends_on:
+      - api-usuarios
+      - api-vistos
+      - api-agencias
+      - api-pedidos
+    networks:
+      - kanban-app-network

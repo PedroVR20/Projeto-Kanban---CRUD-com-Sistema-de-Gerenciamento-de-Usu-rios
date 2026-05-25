@@ -1,0 +1,27 @@
+<div *ngIf="isVisible" class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ title }}</h2>
+      <button mat-icon-button (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <p>Você está prestes a realizar uma ação no pedido de <strong>{{ taskTitle }}</strong>.</p>
+    <p>Por favor, insira o motivo abaixo.</p>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Motivo</mat-label>
+      <textarea matInput [(ngModel)]="reason" name="reason" rows="4" required></textarea>
+    </mat-form-field>
+
+    <div class="modal-actions">
+      <button mat-button type="button" (click)="onClose()">Cancelar</button>
+      <button mat-raised-button color="warn" 
+              [disabled]="!reason.trim()" 
+              (click)="onConfirm()">
+        {{ confirmButtonText }}
+      </button>
+    </div>
+  </div>
+</div>
