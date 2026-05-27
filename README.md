@@ -1,198 +1,132 @@
-# Kanban CRUD — Sistema de Gerenciamento de Usuários
+# Kanban CRUD
 
-Sistema completo de gestão de vistos e pedidos em formato Kanban, com autenticação JWT, controle de perfis e arquitetura de microsserviços.
+Aplicacao web fullstack para gestao de vistos e pedidos usando um quadro Kanban. Tem autenticacao JWT, controle de perfis (MASTER/USER) e roda tudo com Docker.
 
----
+O backend e dividido em 4 APIs Spring Boot independentes, cada uma com seu proprio dominio. O frontend e Angular 19.
 
-## Arquitetura
+## Stack
 
-```
-Frontend (Angular 19)
-        │
-        ▼
-┌───────────────────────────────────────────────┐
-│              Docker Network                   │
-│                                               │
-│  api-usuarios :8083  ──► PostgreSQL (main)    │
-│  api-vistos   :8082  ──► PostgreSQL (main)    │
-│  api-agencias :8084  ──► PostgreSQL (main)    │
-│  api-pedidos  :8081  ──► PostgreSQL (pedidos) │
-│                      ──► PostgreSQL (logs)    │
-│                                               │
-│  api-usuarios ──► RabbitMQ                    │
-└───────────────────────────────────────────────┘
-```
+- **Frontend:** Angular 19 + Angular Material + CDK Drag & Drop
+- **Backend:** Java 21 + Spring Boot 3.5 (4 APIs separadas)
+- **Banco:** PostgreSQL 16
+- **Mensageria:** RabbitMQ 3
+- **Auth:** JWT com HMAC-SHA256
+- **Infra:** Docker Compose
 
-### Stack
+## Como rodar
 
-| Camada | Tecnologia |
-|--------|-----------|
-| Frontend | Angular 19, Angular Material, CDK Drag & Drop |
-| Backend | Spring Boot 3.5, Java 21 |
-| Banco de dados | PostgreSQL 15/16 |
-| Mensageria | RabbitMQ 3 |
-| Autenticação | JWT (HMAC-SHA256) |
-| Containerização | Docker + Docker Compose |
-
----
-
-## Pré-requisitos
-
-- Docker Desktop
-- Java 21 (apenas para desenvolvimento local sem Docker)
-- Node.js 20+ / Angular CLI 19 (apenas para desenvolvimento local sem Docker)
-
----
-
-## Como executar
-
-### 1. Configure as variáveis de ambiente
+Precisa ter o Docker Desktop instalado.
 
 ```bash
 cp .env.example .env
 ```
 
-Edite o `.env` com credenciais fortes. **Nunca commite o `.env` com valores reais.**
+Edita o `.env` com senhas seguras. Pra gerar o `JWT_SECRET_KEY_BASE64`:
 
-Para gerar o `JWT_SECRET_KEY_BASE64`:
 ```bash
 echo -n "sua-chave-secreta-aqui" | base64
 ```
 
-### 2. Suba todos os serviços com Docker
+Depois sobe tudo:
 
 ```bash
 docker-compose up --build
 ```
 
-Aguarde todos os serviços ficarem saudáveis (health checks configurados para Postgres e RabbitMQ).
+Demora um pouco na primeira vez. Espera os health checks passarem e acessa `http://localhost:4200`.
 
-### 3. Acesse a aplicação
+## Portas
 
-| Serviço | URL |
-|---------|-----|
-| Frontend Kanban | http://localhost:4200 |
-| API Usuários | http://localhost:8083 |
-| API Pedidos | http://localhost:8081 |
-| API Vistos | http://localhost:8082 |
-| API Agências | http://localhost:8084 |
-| RabbitMQ Management | http://localhost:15672 |
+| Servico | Porta |
+|---------|-------|
+| Frontend | 4200 |
+| API Usuarios | 8083 |
+| API Pedidos | 8081 |
+| API Vistos | 8082 |
+| API Agencias | 8084 |
+| RabbitMQ (dashboard) | 15672 |
 
----
+Todas as APIs tem Swagger em `http://localhost:{porta}/swagger-ui/index.html`.
 
 ## APIs
 
-### api-usuarios (`:8083`)
-Gerenciamento de usuários com autenticação JWT e controle de perfis.
+### Usuarios (`:8083`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| POST | `/api/v1/usuarios/criar` | Público | Cadastra novo usuário |
-| POST | `/api/v1/usuarios/autenticar` | Público | Login — retorna JWT |
-| GET | `/api/v1/usuarios/pendentes` | MASTER | Lista usuários aguardando aprovação |
-| PUT | `/api/v1/usuarios/{id}/aprovar` | MASTER | Aprova usuário |
-| PUT | `/api/v1/usuarios/{id}/rejeitar` | MASTER | Rejeita usuário |
-| PUT | `/api/v1/usuarios/{id}/perfil` | MASTER | Altera perfil do usuário |
+Autenticacao e gerenciamento de contas.
 
-Perfis disponíveis: `MASTER`, `USER`
+- `POST /api/v1/usuarios/criar` - cadastro (publico)
+- `POST /api/v1/usuarios/autenticar` - login, retorna JWT (publico)
+- `GET /api/v1/usuarios/pendentes` - lista pendentes (MASTER)
+- `PUT /api/v1/usuarios/{id}/aprovar` - aprova usuario (MASTER)
+- `PUT /api/v1/usuarios/{id}/rejeitar` - rejeita usuario (MASTER)
+- `PUT /api/v1/usuarios/{id}/perfil` - altera perfil (MASTER)
 
-### api-pedidos (`:8081`)
-CRUD de tarefas/pedidos do quadro Kanban.
+### Pedidos (`:8081`)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/tasks` | JWT | Lista todas as tarefas |
-| POST | `/api/tasks` | JWT | Cria nova tarefa |
-| PATCH | `/api/tasks/{id}` | JWT | Atualiza tarefa |
-| DELETE | `/api/tasks/{id}` | JWT | Remove tarefa (com motivo) |
+CRUD das tarefas do quadro Kanban.
 
-### api-vistos (`:8082`)
-Gerenciamento de registros de vistos.
+- `GET /api/tasks` - lista tarefas
+- `POST /api/tasks` - cria tarefa
+- `PATCH /api/tasks/{id}` - atualiza tarefa
+- `DELETE /api/tasks/{id}` - remove tarefa (precisa informar motivo)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/v1/vistos` | JWT | Lista vistos |
-| POST | `/api/v1/vistos` | JWT | Cria visto |
-| DELETE | `/api/v1/vistos/{id}` | MASTER | Remove visto |
+### Vistos (`:8082`)
 
-### api-agencias (`:8084`)
-Cadastro de agências parceiras.
+- `GET /api/v1/vistos` - lista vistos
+- `POST /api/v1/vistos` - cria visto
+- `DELETE /api/v1/vistos/{id}` - remove visto (MASTER)
 
-| Método | Endpoint | Auth | Descrição |
-|--------|----------|------|-----------|
-| GET | `/api/v1/agencias` | JWT | Lista agências |
-| GET | `/api/v1/agencias/{id}` | JWT | Busca agência por ID |
-| POST | `/api/v1/agencias` | MASTER | Cadastra agência |
-| PUT | `/api/v1/agencias/{id}` | MASTER | Atualiza agência |
-| DELETE | `/api/v1/agencias/{id}` | MASTER | Remove agência |
+### Agencias (`:8084`)
 
-Swagger UI disponível em cada API: `http://localhost:{porta}/swagger-ui/index.html`
+- `GET /api/v1/agencias` - lista agencias
+- `GET /api/v1/agencias/{id}` - busca por ID
+- `POST /api/v1/agencias` - cadastra (MASTER)
+- `PUT /api/v1/agencias/{id}` - atualiza (MASTER)
+- `DELETE /api/v1/agencias/{id}` - remove (MASTER)
 
----
-
-## Estrutura do projeto
+## Estrutura
 
 ```
-.
-├── backend/
-│   ├── projetoUsuariosApi/   # API de autenticação e usuários
-│   ├── apidepedidos/         # API de tarefas do Kanban
-│   ├── ApideVistos/          # API de vistos
-│   └── api-agencias/         # API de agências
-├── frontend/
-│   └── front/                # Aplicação Angular 19
-├── postgres-init/
-│   └── init.sql              # Script de criação dos databases
-├── docker-compose.yml
-├── .env.example              # Template de variáveis de ambiente
-└── .gitignore
+backend/
+  projetoUsuariosApi/   -> autenticacao e usuarios
+  apidepedidos/         -> tarefas do kanban
+  ApideVistos/          -> vistos
+  api-agencias/         -> agencias
+frontend/
+  front/                -> app Angular
+postgres-init/
+  init.sql              -> cria os databases no startup
+docker-compose.yml
+.env.example
 ```
 
----
+## Dev local (sem Docker)
 
-## Desenvolvimento local (sem Docker)
+Se quiser rodar sem Docker, vai precisar de Java 21, Node 20+ e Angular CLI 19.
 
-### Backend
-
-Cada API pode ser executada individualmente. Configure as variáveis de ambiente antes:
-
+Backend (cada API separada):
 ```bash
-export JWT_SECRET_KEY=sua-chave-local
+export JWT_SECRET_KEY=sua-chave
 cd backend/projetoUsuariosApi
 ./mvnw spring-boot:run
 ```
 
-### Frontend
-
+Frontend:
 ```bash
 cd frontend/front
 npm install
 ng serve
 ```
 
-O Angular usa `environment.development.ts` em modo dev, apontando para `localhost`.
+## Variaveis de ambiente
 
----
+Veja o `.env.example` pra lista completa. Basicamente: credenciais dos bancos Postgres, usuario/senha do RabbitMQ, e a chave JWT (normal + base64).
 
-## Variáveis de ambiente
+**Nunca commite o `.env` com valores reais.**
 
-| Variável | Descrição |
-|----------|-----------|
-| `POSTGRES_MAIN_USER` | Usuário do banco principal |
-| `POSTGRES_MAIN_PASSWORD` | Senha do banco principal |
-| `POSTGRES_PEDIDOS_USER` | Usuário do banco de pedidos/logs |
-| `POSTGRES_PEDIDOS_PASSWORD` | Senha do banco de pedidos/logs |
-| `RABBITMQ_USER` | Usuário do RabbitMQ |
-| `RABBITMQ_PASS` | Senha do RabbitMQ |
-| `JWT_SECRET_KEY` | Chave secreta JWT (mín. 32 chars) |
-| `JWT_SECRET_KEY_BASE64` | JWT_SECRET_KEY em Base64 (para api-pedidos) |
+## Seguranca
 
----
-
-## Segurança
-
-- Senhas armazenadas com **BCrypt**
-- Tokens JWT assinados com **HMAC-SHA256**, expiração de 2 horas
-- Todas as APIs (exceto login/cadastro) exigem token válido
-- Operações destrutivas restritas ao perfil **MASTER**
-- Credenciais gerenciadas exclusivamente via variáveis de ambiente (`.env`)
+- Senhas com BCrypt
+- JWT expira em 2h
+- Rotas protegidas por token (exceto login/cadastro)
+- Operacoes destrutivas so pra MASTER
