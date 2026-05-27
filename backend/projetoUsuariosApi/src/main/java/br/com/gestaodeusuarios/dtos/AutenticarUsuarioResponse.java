@@ -20,4 +20,5 @@ public class AutenticarUsuarioResponse {
 	private LocalDateTime dataHoraExpiracao;
 
 	private String token;
+	private String refreshToken;
 }

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { Subscription, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ColumnComponent } from '../column/column.component';
 import { TaskModalComponent } from '../task-modal/task-modal.component';
 import { Column, ApiTask, FilterData, PedidoFormData } from '../../models';
@@ -20,13 +21,14 @@ import { ReasonModalComponent } from '../reason-modal/reason-modal.component';
   standalone: true,
   imports: [
     CommonModule, DragDropModule, ColumnComponent, TaskModalComponent,
-    FilterModalComponent, ReasonModalComponent
+    FilterModalComponent, ReasonModalComponent, MatProgressBarModule
   ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.css']
 })
 export class KanbanBoardComponent implements OnInit, OnDestroy {
   public columns: Column[] = [];
+  public isLoading = false;
   private subscription = new Subscription();
 
   public showFilterModal = false;
@@ -55,6 +57,9 @@ export class KanbanBoardComponent implements OnInit, OnDestroy {
         const allColumns = this.kanbanService.getColumnsValue(); // Pega o valor atual
         this.applyFilter(allColumns, filterData);
       })
+    );
+    this.subscription.add(
+      this.kanbanService.isLoading$.subscribe(loading => this.isLoading = loading)
     );
     this.subscription.add(this.modalService.openModal$.subscribe(() => this.openTaskModal()));
     this.subscription.add(this.modalService.openFilterModal$.subscribe(() => this.openFilterModal()));

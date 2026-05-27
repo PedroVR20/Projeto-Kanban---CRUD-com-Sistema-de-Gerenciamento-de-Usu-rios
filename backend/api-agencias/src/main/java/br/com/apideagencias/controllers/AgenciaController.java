@@ -25,6 +25,7 @@ import br.com.apideagencias.dtos.AgenciaResponseDto;
 import br.com.apideagencias.entities.Agencia;
 import br.com.apideagencias.repositories.AgenciaRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/agencias")
@@ -36,7 +37,7 @@ public class AgenciaController {
     
     @PostMapping
     @Transactional
-    public ResponseEntity<AgenciaResponseDto> cadastrar(@RequestBody AgenciaRequestDto dados, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<AgenciaResponseDto> cadastrar(@RequestBody @Valid AgenciaRequestDto dados, UriComponentsBuilder uriBuilder) {
         
         Agencia novaAgencia = new Agencia(dados);
         
@@ -71,7 +72,7 @@ public class AgenciaController {
    
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<AgenciaResponseDto> atualizar(@PathVariable UUID id, @RequestBody AgenciaRequestDto dados) {
+    public ResponseEntity<AgenciaResponseDto> atualizar(@PathVariable UUID id, @RequestBody @Valid AgenciaRequestDto dados) {
         return repository.findById(id)
                 .map(agenciaExistente -> {
                    

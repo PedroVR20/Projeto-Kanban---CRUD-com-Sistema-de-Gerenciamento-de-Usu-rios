@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/autenticar").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/criar").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/refresh").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/error").permitAll()

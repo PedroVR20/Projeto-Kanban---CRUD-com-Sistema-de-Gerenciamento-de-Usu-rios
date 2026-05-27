@@ -20,8 +20,11 @@ import br.com.gestaodeusuarios.dtos.AutenticarUsuarioRequest;
 import br.com.gestaodeusuarios.dtos.AutenticarUsuarioResponse;
 import br.com.gestaodeusuarios.dtos.CriarUsuarioRequest;
 import br.com.gestaodeusuarios.dtos.CriarUsuarioResponse;
+import br.com.gestaodeusuarios.dtos.RefreshTokenRequest;
+import br.com.gestaodeusuarios.dtos.RefreshTokenResponse;
 import br.com.gestaodeusuarios.dtos.UsuarioPendenteDto;
 import br.com.gestaodeusuarios.dtos.UsuarioResponse;
+import br.com.gestaodeusuarios.services.RefreshTokenService;
 import br.com.gestaodeusuarios.services.UsuarioService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -30,8 +33,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1/usuarios")
 public class UsuarioController {
 
-	//injeção de dependência
 	@Autowired UsuarioService usuarioService;
+	@Autowired RefreshTokenService refreshTokenService;
 	
 	@PostMapping("criar")
 	public CriarUsuarioResponse criar(@RequestBody @Valid CriarUsuarioRequest request) {
@@ -41,6 +44,13 @@ public class UsuarioController {
 	@PostMapping("autenticar")
 	public AutenticarUsuarioResponse autenticar(@RequestBody @Valid AutenticarUsuarioRequest request) {
 		return usuarioService.autenticarUsuario(request);
+	}
+
+	@PostMapping("refresh")
+	public ResponseEntity<?> refresh(@RequestBody @Valid RefreshTokenRequest request) {
+		return refreshTokenService.refreshToken(request.getRefreshToken())
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.status(401).build());
 	}
 	
 	@GetMapping("/pendentes")

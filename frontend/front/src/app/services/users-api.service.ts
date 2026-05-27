@@ -11,6 +11,7 @@ export class UserApiService {
 
   private readonly API_BASE_URL = environment.apiUsuarios;
   private readonly TOKEN_KEY = 'token';
+  private readonly REFRESH_TOKEN_KEY = 'refreshToken';
 
   private loggedInStatus = new BehaviorSubject<boolean>(!!localStorage.getItem(this.TOKEN_KEY ));
 
@@ -22,11 +23,17 @@ export class UserApiService {
 
   
 
-  public setToken(token: string): void {
+  public setToken(token: string, refreshToken?: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
+    if (refreshToken) {
+      localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
+    }
     this.loggedInStatus.next(true);
-    // AVISANDO O UserDataService PARA CARREGAR OS DADOS DO NOVO TOKEN
     this.userDataService.loadToken();
+  }
+
+  public getRefreshToken(): string | null {
+    return localStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
 
   public getToken(): string | null {
@@ -35,10 +42,9 @@ export class UserApiService {
 
   public logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     this.loggedInStatus.next(false);
-    // AVISANDO O UserDataService PARA LIMPAR OS DADOS
     this.userDataService.clearToken();
-    console.log('Usuário deslogado e token removido.');
   }
 
   public isLoggedIn(): Observable<boolean> {
@@ -49,13 +55,18 @@ export class UserApiService {
 
   public autenticar(loginData: any): Observable<any> {
     const url = `${this.API_BASE_URL}/autenticar`;
-    return this.http.post<any>(url, loginData ).pipe(
+    return this.http.post<any>(url, loginData).pipe(
       tap(response => {
         if (response && response.token) {
-          this.setToken(response.token); // setToken já cuida de tudo
+          this.setToken(response.token, response.refreshToken);
         }
       })
     );
+  }
+
+  public refreshToken(refreshToken: string): Observable<{ token: string; refreshToken: string }> {
+    const url = `${this.API_BASE_URL}/refresh`;
+    return this.http.post<{ token: string; refreshToken: string }>(url, { refreshToken });
   }
 
   public criar(userData: any): Observable<any> {

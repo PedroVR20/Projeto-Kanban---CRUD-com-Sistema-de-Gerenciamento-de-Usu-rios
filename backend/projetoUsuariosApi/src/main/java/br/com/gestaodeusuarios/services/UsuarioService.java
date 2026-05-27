@@ -36,6 +36,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final TokenService tokenService;
+    private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     
@@ -107,7 +108,8 @@ public class UsuarioService {
         response.setEmail(usuario.getEmail());
         response.setDataHoraAcesso(LocalDateTime.now());
         response.setToken(tokenService.generateToken(usuario));
-    
+        response.setRefreshToken(refreshTokenService.createRefreshToken(usuario.getId()));
+
         return response;
     }    
     

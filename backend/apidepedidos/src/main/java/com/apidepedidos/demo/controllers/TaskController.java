@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apidepedidos.demo.dtos.CreateTaskRequest;
+import jakarta.validation.Valid;
 import com.apidepedidos.demo.dtos.UpdateTaskRequest;
 import com.apidepedidos.demo.pedidos.model.Task;
 import com.apidepedidos.demo.services.TaskService;
@@ -26,7 +27,7 @@ public class TaskController {
 	@Autowired private TaskService taskService;
 	
 	@PostMapping
-	public ResponseEntity<Task> createTask(@RequestBody CreateTaskRequest request) {
+	public ResponseEntity<Task> createTask(@RequestBody @Valid CreateTaskRequest request) {
 		
 	    Task createdTask = taskService.createTask(request);
 	    

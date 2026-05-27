@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.apidevistos.dtos.VistoRequestDto;
+import jakarta.validation.Valid;
 import br.com.apidevistos.dtos.VistoResponseDto;
 import br.com.apidevistos.entities.Visto;
 import br.com.apidevistos.services.VistoService;
@@ -43,7 +44,7 @@ public class VistoController {
     }
 
     @PostMapping
-    public ResponseEntity<VistoResponseDto> criarVisto(@RequestBody VistoRequestDto vistoRequestDto,
+    public ResponseEntity<VistoResponseDto> criarVisto(@RequestBody @Valid VistoRequestDto vistoRequestDto,
             @AuthenticationPrincipal Jwt jwt) {
         UUID operadorId = UUID.fromString(jwt.getClaimAsString("userId"));
         Visto novoVisto = vistoService.criarVisto(vistoRequestDto.getNome(), operadorId);

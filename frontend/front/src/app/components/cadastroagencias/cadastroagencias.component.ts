@@ -15,6 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Agency } from '../../models/agency.model';
 import { AgencyService } from '../../services/agency.service';
+import { NotificationService } from '../../services/notification.service';
 import { Subject, combineLatest } from 'rxjs';
 import { takeUntil, startWith, debounceTime, distinctUntilChanged, map, finalize } from 'rxjs/operators';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -44,6 +45,7 @@ export class CadastroagenciasComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private agencyService: AgencyService,
+    private notificationService: NotificationService,
     private dialog: MatDialog
   ) {}
 
@@ -107,14 +109,14 @@ export class CadastroagenciasComponent implements OnInit, OnDestroy {
 
       this.agencyService.addAgency(newAgency).subscribe({
         next: () => {
-        // Limpa os campos corretos
-        this.agencyForm.patchValue({
-          nome: '', cnpj: '', email: '', telefone: '', endereco: ''
-        });
+          this.agencyForm.patchValue({
+            nome: '', cnpj: '', email: '', telefone: '', endereco: ''
+          });
           this.agencyForm.markAsPristine();
           this.agencyForm.markAsUntouched();
+          this.notificationService.success('Agência cadastrada com sucesso.');
         },
-        error: (err) => console.error('Erro ao cadastrar agência:', err)
+        error: () => this.notificationService.error('Erro ao cadastrar agência. Tente novamente.')
       });
     } else {
       this.agencyForm.markAllAsTouched();
@@ -139,8 +141,8 @@ export class CadastroagenciasComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.agencyService.deleteAgency(id).subscribe({
-          next: () => console.log('Agência excluída com sucesso!'),
-          error: (err) => console.error('Erro ao excluir agência:', err)
+          next: () => this.notificationService.success('Agência removida.'),
+          error: () => this.notificationService.error('Erro ao remover agência.')
         });
       }
     });

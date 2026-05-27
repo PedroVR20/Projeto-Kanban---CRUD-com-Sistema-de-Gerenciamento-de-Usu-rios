@@ -3,11 +3,12 @@
 // ==================================================================
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { finalize, tap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Column, ApiTask, FilterData, PedidoFormData } from '../models';
 import { TaskApiService } from './task-api.service';
 import { UserDataService } from './user-data.service';
+import { NotificationService } from './notification.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Injectable({
@@ -32,9 +33,13 @@ export class KanbanService {
   private filterSubject = new BehaviorSubject<FilterData>({ clientName: '', clientId: '', file: '' });
   public filter$ = this.filterSubject.asObservable();
 
+  private isLoadingSubject = new BehaviorSubject<boolean>(false);
+  public isLoading$ = this.isLoadingSubject.asObservable();
+
   constructor(
     private taskApiService: TaskApiService,
-    private userDataService: UserDataService
+    private userDataService: UserDataService,
+    private notificationService: NotificationService
   ) {
     this.loadTasksFromApi();
     this.listenToUserChanges();
@@ -73,9 +78,12 @@ export class KanbanService {
 
   // --- MÉTODOS DE MODIFICAÇÃO (CRUD) ---
   public loadTasksFromApi(): void {
-    this.taskApiService.getTasks().subscribe({
+    this.isLoadingSubject.next(true);
+    this.taskApiService.getTasks().pipe(
+      finalize(() => this.isLoadingSubject.next(false))
+    ).subscribe({
       next: (apiTasks) => this.updateColumnsState(apiTasks),
-      error: (err) => console.error('Erro ao carregar tarefas da API:', err)
+      error: () => {}
     });
   }
 
@@ -98,8 +106,11 @@ export class KanbanService {
   public addTask(taskData: PedidoFormData): Observable<ApiTask> {
     return this.taskApiService.createTask(taskData).pipe(
       tap({
-        next: () => this.loadTasksFromApi(),
-        error: () => this.loadTasksFromApi() // Força recarga em erro para limpar fantasmas
+        next: () => {
+          this.notificationService.success('Pedido criado com sucesso.');
+          this.loadTasksFromApi();
+        },
+        error: () => this.loadTasksFromApi()
       })
     );
   }
@@ -107,8 +118,11 @@ export class KanbanService {
   public deleteTask(taskId: string, reason: string): Observable<void> {
     return this.taskApiService.deleteTask(taskId, reason).pipe(
       tap({
-        next: () => this.loadTasksFromApi(),
-        error: () => this.loadTasksFromApi() // Força recarga em erro para limpar fantasmas
+        next: () => {
+          this.notificationService.success('Pedido removido.');
+          this.loadTasksFromApi();
+        },
+        error: () => this.loadTasksFromApi()
       })
     );
   }
@@ -119,21 +133,26 @@ export class KanbanService {
       const newColumn = this.getColumnsValue().find(col => col.id === event.container.id);
 
       if (task && newColumn) {
-        this.updateTask(task.id, { processStatus: newColumn.name }).subscribe({
-          error: (err) => {
-            console.error('Falha ao mover a tarefa:', err);
-            this.loadTasksFromApi(); // Força recarga em erro para restaurar posição correta
+        this.updateTask(task.id, { processStatus: newColumn.name }, false).subscribe({
+          error: () => {
+            this.notificationService.error('Erro ao mover pedido. Recarregando...');
+            this.loadTasksFromApi();
           }
         });
       }
     }
   }
 
-  public updateTask(taskId: string, formData: Partial<PedidoFormData>): Observable<ApiTask> {
+  public updateTask(taskId: string, formData: Partial<PedidoFormData>, showToast = true): Observable<ApiTask> {
     return this.taskApiService.updateTask(taskId, formData as PedidoFormData).pipe(
       tap({
-        next: () => this.loadTasksFromApi(),
-        error: () => this.loadTasksFromApi() // Força recarga em erro para limpar fantasmas
+        next: () => {
+          if (showToast) {
+            this.notificationService.success('Pedido atualizado.');
+          }
+          this.loadTasksFromApi();
+        },
+        error: () => this.loadTasksFromApi()
       })
     );
   }

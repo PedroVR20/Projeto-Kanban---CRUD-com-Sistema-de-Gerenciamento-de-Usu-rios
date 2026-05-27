@@ -2,3 +2,23 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Snackbar customizations */
+.snackbar-success .mdc-snackbar__surface {
+  background-color: #2e7d32 !important;
+  color: #fff !important;
+}
+
+.snackbar-error .mdc-snackbar__surface {
+  background-color: #c62828 !important;
+  color: #fff !important;
+}
+
+/* Loading bar on Kanban board */
+.board-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+}
