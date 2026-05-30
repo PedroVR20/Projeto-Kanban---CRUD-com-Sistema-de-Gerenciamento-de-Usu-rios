@@ -1,7 +1,7 @@
 # Estágio 1: Compilar o projeto Angular
-FROM node:18 as builder
+FROM node:20-alpine as builder
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 RUN npm install
 COPY . .
 RUN node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production

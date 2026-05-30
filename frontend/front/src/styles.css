@@ -1,7 +1,122 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ── THEME VARIABLES ──────────────────────────────────────────── */
+
+:root {
+  --bg-app:            #f4f5f7;
+  --bg-card:           #ffffff;
+  --bg-column:         #f5f5f5;
+  --bg-input:          #ffffff;
+  --text-primary:      #333333;
+  --text-secondary:    #666666;
+  --text-muted:        #888888;
+  --text-label:        #4b4f56;
+  --border-color:      #e0e0e0;
+  --border-input:      #dddfe2;
+  --shadow:            rgba(0, 0, 0, 0.10);
+  --shadow-hover:      rgba(0, 0, 0, 0.15);
+  --login-bg:          #f0f2f5;
+  --login-heading:     #1c1e21;
+  --login-subtext:     #606770;
+  --badge-bg:          #e3f2fd;
+  --badge-color:       #1976d2;
+  --task-list-bg:      #f4f5f7;
+  --task-list-drag-bg: #e6e9ed;
+  --highlight-bg:      #f5f5f5;
+  --info-box-bg:       #fff8e1;
+  --signup-border:     #dadde1;
+  --table-hover:       #f9f9f9;
+}
+
+[data-theme="dark"] {
+  --bg-app:            #1a1b1e;
+  --bg-card:           #2d2f33;
+  --bg-column:         #26282c;
+  --bg-input:          #3a3d42;
+  --text-primary:      #e8eaed;
+  --text-secondary:    #b0b3b8;
+  --text-muted:        #9ea1a6;
+  --text-label:        #c5c7cb;
+  --border-color:      #3d4045;
+  --border-input:      #4a4d52;
+  --shadow:            rgba(0, 0, 0, 0.30);
+  --shadow-hover:      rgba(0, 0, 0, 0.45);
+  --login-bg:          #1a1b1e;
+  --login-heading:     #e8eaed;
+  --login-subtext:     #b0b3b8;
+  --badge-bg:          #1a3a5c;
+  --badge-color:       #64b5f6;
+  --task-list-bg:      #22252a;
+  --task-list-drag-bg: #2c3039;
+  --highlight-bg:      #3a3d42;
+  --info-box-bg:       #3a3520;
+  --signup-border:     #3d4045;
+  --table-hover:       #32353a;
+}
+
+/* ── ANGULAR MATERIAL DARK OVERRIDES (global scope) ───────────── */
+
+[data-theme="dark"] .mat-mdc-form-field .mdc-text-field--filled {
+  background-color: var(--bg-input) !important;
+}
+
+[data-theme="dark"] .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
+[data-theme="dark"] .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
+[data-theme="dark"] .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .mat-mdc-form-field .mdc-floating-label,
+[data-theme="dark"] .mat-mdc-form-field label {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .mat-mdc-input-element,
+[data-theme="dark"] .mat-mdc-select-value-text,
+[data-theme="dark"] .mat-mdc-select-placeholder {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .mat-mdc-select-panel,
+[data-theme="dark"] .mat-mdc-autocomplete-panel {
+  background-color: var(--bg-card) !important;
+}
+
+[data-theme="dark"] .mat-mdc-option {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .mat-mdc-option:hover,
+[data-theme="dark"] .mat-mdc-option.mat-mdc-option-active {
+  background-color: var(--bg-column) !important;
+}
+
+[data-theme="dark"] .mat-mdc-card {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .mat-divider {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .mat-mdc-list-item {
+  color: var(--text-primary) !important;
+}
 
 /* Snackbar customizations */
 .snackbar-success .mdc-snackbar__surface {

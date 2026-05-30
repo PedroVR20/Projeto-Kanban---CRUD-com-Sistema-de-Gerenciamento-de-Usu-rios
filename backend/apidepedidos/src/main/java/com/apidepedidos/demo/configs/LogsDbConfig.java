@@ -1,6 +1,7 @@
 package com.apidepedidos.demo.configs;
 
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +19,21 @@ import org.springframework.transaction.PlatformTransactionManager;
 )
 public class LogsDbConfig {
 
+    @Value("${logs.datasource.url}")
+    private String url;
+
+    @Value("${logs.datasource.username}")
+    private String username;
+
+    @Value("${logs.datasource.password}")
+    private String password;
+
     @Bean(name = "logsDataSource")
     public DataSource dataSource() {
         return DataSourceBuilder.create()
-                .url("jdbc:postgresql://postgres_logs:5432/logs_db")
-                .username("postgres")
-                .password("adminpass")
+                .url(url)
+                .username(username)
+                .password(password)
                 .driverClassName("org.postgresql.Driver")
                 .build();
     }

@@ -12,7 +12,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--bg-card);
   border-radius: 8px;
   padding: 24px;
   width: 90%;
@@ -29,6 +29,7 @@
 .modal-header h2 {
   margin: 0;
   font-size: 20px;
+  color: var(--text-primary);
 }
 
 .filter-form {
@@ -47,5 +48,5 @@
   gap: 12px;
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color);
 }

@@ -1,5 +1,5 @@
 # Estágio 1: Build da aplicação com Java 21
-FROM maven:3-eclipse-temurin-21 AS builder
+FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 
 # Define o diretório de trabalho
 WORKDIR /app

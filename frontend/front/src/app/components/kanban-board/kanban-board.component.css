@@ -1,17 +1,15 @@
 .board-container {
-  /* Ocupa todo o espaço disponível */
   width: 100%;
-  height: calc(100vh - 64px); /* Altura da tela menos a altura da navbar */
-  overflow-x: auto; /* Permite rolar horizontalmente se as colunas não couberem */
-  background-color: #f4f5f7; /* Um fundo cinza claro para o quadro */
+  height: calc(100vh - 64px);
+  overflow-x: auto;
+  background-color: var(--bg-app);
 }
 
 .columns-wrapper {
-  /* ESTA É A PARTE MAIS IMPORTANTE */
-  display: flex; /* Ativa o Flexbox */
-  flex-direction: row; /* Alinha os itens em uma linha (horizontalmente) */
-  align-items: flex-start; /* Alinha as colunas no topo */
-  gap: 16px; /* Adiciona um espaço entre as colunas */
-  padding: 20px; /* Adiciona um espaçamento interno no quadro */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
   height: 100%;
 }

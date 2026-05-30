@@ -1,5 +1,5 @@
 .column {
-  background: #f5f5f5;
+  background: var(--bg-column);
   border-radius: 8px;
   padding: 16px;
   min-height: 500px;
@@ -15,14 +15,14 @@
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .column-header h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .task-count {
@@ -46,7 +46,7 @@
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: #999;
+  color: var(--text-muted);
   font-style: italic;
 }
 
@@ -54,27 +54,17 @@
   margin: 0;
 }
 
-/* Dentro de column.component.css */
-
 .task-list {
-  /* 
-    ESTA É A REGRA MAIS IMPORTANTE!
-    Ela garante que mesmo uma coluna vazia tenha uma área "dropável".
-    O valor pode ser ajustado conforme seu layout.
-  */
-  min-height: 150px; 
-  
-  /* Outros estilos que você já tenha para a lista */
+  min-height: 150px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding: 0.5rem;
   border-radius: 8px;
-  background-color: #f4f5f7; /* Um cinza claro para diferenciar a área */
+  background-color: var(--task-list-bg);
   transition: background-color 0.2s ease;
 }
 
-/* Opcional: Mudar a cor de fundo quando um item está sendo arrastado por cima */
 .cdk-drop-list-dragging .task-list {
-  background-color: #e6e9ed;
+  background-color: var(--task-list-drag-bg);
 }

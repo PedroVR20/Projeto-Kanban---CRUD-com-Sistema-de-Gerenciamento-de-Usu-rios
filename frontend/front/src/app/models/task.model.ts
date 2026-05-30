@@ -19,6 +19,15 @@ export interface ApiTask extends Task {
   id: string;
 }
 
+export interface PagedResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  last: boolean;
+}
+
 export interface PedidoFormData {
   id?: string;
   clientName?: string;

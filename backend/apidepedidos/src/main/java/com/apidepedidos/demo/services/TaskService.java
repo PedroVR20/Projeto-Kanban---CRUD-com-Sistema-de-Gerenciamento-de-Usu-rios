@@ -1,10 +1,12 @@
 package com.apidepedidos.demo.services;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -70,17 +72,17 @@ public class TaskService {
         return taskRepository.save(newTask);
 	}
 	
-	public List<Task> findAllTasks() {
+	public Page<Task> findAllTasks(Pageable pageable) {
 		String currentUserId = getCurrentUserId();
 		if (isUserMaster()) {
-			return taskRepository.findAll();
+			return taskRepository.findAll(pageable);
 		}
-		
+
 		if ("Usuário Padrão".equals(currentUserId)) {
-			return java.util.Collections.emptyList();
+			return new PageImpl<>(java.util.Collections.emptyList(), pageable, 0);
 		}
-		
-		return taskRepository.findByOwnerId(currentUserId);
+
+		return taskRepository.findByOwnerId(currentUserId, pageable);
 	}
 	
 	public Task updateTask(Long taskId, UpdateTaskRequest request) {

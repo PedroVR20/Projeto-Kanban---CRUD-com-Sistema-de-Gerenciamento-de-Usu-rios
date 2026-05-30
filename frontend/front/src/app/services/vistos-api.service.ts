@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { UserDataService } from './user-data.service';
 import { VistoRequest, VistoResponse } from '../models/visto.model';
 import { UserApiService } from './users-api.service';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

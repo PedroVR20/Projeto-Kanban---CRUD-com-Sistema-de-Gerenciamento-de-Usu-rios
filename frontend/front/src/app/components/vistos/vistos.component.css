@@ -1,27 +1,27 @@
 /* Estilo geral do container */
 .vistos-container {
   padding: 24px;
-  background-color: #f5f5f5;
-  min-height: calc(100vh - 64px); /* Ocupa a altura da tela menos a navbar */
+  background-color: var(--bg-app);
+  min-height: calc(100vh - 64px);
 }
 
 /* Cabeçalho da página */
 .header {
   margin-bottom: 32px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .header h1 {
   font-size: 2.5em;
-  color: #3f51b5; /* Azul primário */
+  color: #3f51b5;
   font-weight: 500;
   margin: 0;
 }
 
 .header p {
   font-size: 1.1em;
-  color: #616161;
+  color: var(--text-secondary);
   margin-top: 8px;
 }
 
@@ -33,7 +33,7 @@
 .creation-card {
   max-width: 600px;
   margin: 0 auto;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px var(--shadow);
 }
 
 .creation-form {
@@ -56,15 +56,15 @@
 
 /* Estilo individual de cada card de visto */
 .info-card {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 8px var(--shadow);
   border-radius: 8px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .info-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 16px var(--shadow-hover);
 }
 
 .mat-card-title {
@@ -75,7 +75,7 @@
 
 .mat-card-content p {
   margin: 8px 0;
-  word-break: break-all; /* Garante que IDs longos não quebrem o layout */
+  word-break: break-all;
 }
 
 /* Estilos para estados de carregamento e erro */
@@ -85,12 +85,12 @@
   justify-content: center;
   align-items: center;
   padding: 50px;
-  color: #757575;
+  color: var(--text-muted);
   gap: 16px;
 }
 
 .error-message {
-  color: #f44336; /* Vermelho de erro */
+  color: #f44336;
   font-weight: 500;
 }
 
@@ -111,7 +111,7 @@
 
 .icone-field {
   min-width: 180px;
-  flex-grow: 0; /* Impede que o campo de ícone cresça demais */
+  flex-grow: 0;
 }
 
 .salvar-button {
@@ -119,7 +119,7 @@
 }
 
 .visto-card {
-  margin-bottom: 16px; /* Você pode ajustar este valor (ex: 20px, 1rem) */
+  margin-bottom: 16px;
 }
 
 .section-divider {

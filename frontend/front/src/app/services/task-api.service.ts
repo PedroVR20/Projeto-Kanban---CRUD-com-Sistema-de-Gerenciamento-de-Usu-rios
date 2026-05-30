@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PedidoFormData , ApiTask } from '../models/task.model';
-import { environment } from '../../../environments/environment';
+import { map } from 'rxjs/operators';
+import { PedidoFormData, ApiTask, PagedResponse } from '../models/task.model';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -14,7 +15,10 @@ export class TaskApiService {
   constructor(private http: HttpClient ) { }
 
   getTasks(): Observable<ApiTask[]> {
-    return this.http.get<ApiTask[]>(this.apiUrl );
+    const params = new HttpParams().set('size', '500').set('page', '0');
+    return this.http.get<PagedResponse<ApiTask>>(this.apiUrl, { params }).pipe(
+      map(response => response.content)
+    );
   }
 
   createTask(taskData: PedidoFormData): Observable<ApiTask> {
